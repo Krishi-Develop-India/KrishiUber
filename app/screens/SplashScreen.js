@@ -27,7 +27,7 @@ function SplashScreen(props) {
                 />
                 <AppText style={styles.splashKrishi}>ı</AppText>
             </View>
-            <AppText style={styles.initiative}>an agro initiative by Uber Technologies</AppText>
+            <AppText style={styles.initiative}>an agro initiative by Case3 Technologies</AppText>
         </Screen>
     );
 }
@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
       position: 'absolute',
       bottom: 150,
       color: colors.dark,
-    //   fontFamily: 'Roboto',
     },
     splash: {
       alignItems: 'center',

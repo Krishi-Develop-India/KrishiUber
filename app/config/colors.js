@@ -4,4 +4,5 @@ export default {
     green: '#70B91E',
     dark: '#847E7E',
     light: '#C4C4C4',
+    danger: '#ff5252',
 }
