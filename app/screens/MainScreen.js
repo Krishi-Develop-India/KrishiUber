@@ -1,14 +1,32 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import colors from '../config/colors'
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import Screen from './../components/Screen';
 import AppText from './../components/AppText';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import Location from './../components/Location';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import CurrentLocation from '../components/CurrentLocation';
+import Separator from './../components/Separator';
+import * as LocationApi from 'expo-location';
+import Location from './../components/Location';
 
 function MainScreen({handleDelete, array, navigation}) {
+
+  const getLocation = async () => {
+    try{
+      const { granted } = await LocationApi.requestPermissionsAsync();
+      if(!granted) return;
+      const result = await LocationApi.getCurrentPositionAsync();
+      console.log(result.coords.latitude, result.coords.longitude);
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    getLocation();
+  }, [])
+
     return (
         <Screen style={styles.box}>
         <View style={styles.container}>
@@ -29,7 +47,7 @@ function MainScreen({handleDelete, array, navigation}) {
             </View>
         </View>
         <View style={styles.services}>
-        <View style={styles.bar}></View>
+        <Separator style={styles.bar} />
         <ScrollView style={styles.scrollView} vertical showsVerticalScrollIndicator={false} alwaysBounceVertical >
             
             {array.length == 0 && <View style={styles.subCat}><CurrentLocation /></View>}
@@ -38,7 +56,7 @@ function MainScreen({handleDelete, array, navigation}) {
             <View style={styles.subCat} key={item.id}>
                 
                 {(array[0].id==item.id) && <CurrentLocation /> }
-                {(array[0].id==item.id) && <View style={styles.separator}></View> }
+                {(array[0].id==item.id) && <Separator /> }
 
                 <Location heading={item.place} headingDetail={item.address} renderRightAction={ () => 
                 
@@ -47,7 +65,7 @@ function MainScreen({handleDelete, array, navigation}) {
                 </TouchableWithoutFeedback>
 
                 } />
-                { array[array.length-1].id!=item.id && <View style={styles.separator}></View>}
+                { array[array.length-1].id!=item.id && <Separator /> }
             </View>
             ))}
         </ScrollView>

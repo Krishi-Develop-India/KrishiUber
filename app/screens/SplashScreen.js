@@ -7,7 +7,7 @@ import Screen from './../components/Screen';
 import AppText from './../components/AppText';
 import LottieView from 'lottie-react-native';
 
-function SplashScreen(props) {
+function SplashScreen({setFirstLoad}) {
     return (
         <Screen style={styles.splash}>
             <AppText style={styles.splashKrishi}>Kr</AppText>
@@ -15,6 +15,8 @@ function SplashScreen(props) {
             <LottieView 
                 style={styles.animation}
                 autoPlay
+                loop={false}
+                onAnimationFinish={() => setFirstLoad(false)}
                 source={require('../assets/animations/green-flower.json')} 
             />
                 <AppText style={styles.splashKrishi}>ı</AppText>
@@ -24,10 +26,11 @@ function SplashScreen(props) {
                 <LottieView style={styles.animation}
                 autoPlay
                 source={require('../assets/animations/green-flower.json')} 
+                loop={false}
                 />
                 <AppText style={styles.splashKrishi}>ı</AppText>
             </View>
-            <AppText style={styles.initiative}>an agro initiative by Case3 Technologies</AppText>
+            <AppText style={styles.initiative}>an agro initiative by case3 Technologies</AppText>
         </Screen>
     );
 }
@@ -47,7 +50,7 @@ const styles = StyleSheet.create({
     },
     initiative: {
       position: 'absolute',
-      bottom: 150,
+      bottom: 50,
       color: colors.dark,
     },
     splash: {
