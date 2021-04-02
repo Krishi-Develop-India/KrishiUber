@@ -1,9 +1,23 @@
-import client from './client';
+import authClient from './authClient';
 
-const endpoint = '/services';
+const endpointServices = '/services';
+const endpointReverseGeoCoding = '/locationLabel';
+const endpointNearestTractor = '/getNearestTractor';
 
-const getServices = () => client.get(endpoint);
+const getReverGeoCoding = (latitude, longitude) => (
+    authClient.post(endpointReverseGeoCoding, {latitude, longitude})
+);
+
+const getNearestTractor = (latitude, longitude) => (
+    authClient.post(endpointNearestTractor, {latitude, longitude})
+)
+
+const getServices = () => (
+    authClient.get(endpointServices)
+)
 
 export default {
-    getServices
+    getServices,
+    getNearestTractor,
+    getReverGeoCoding,
 }

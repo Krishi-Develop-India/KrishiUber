@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import colors from '../config/colors'
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import Screen from './../components/Screen';
@@ -9,8 +9,12 @@ import CurrentLocation from '../components/CurrentLocation';
 import Separator from './../components/Separator';
 import * as LocationApi from 'expo-location';
 import Location from './../components/Location';
+import services from '../api/services';
 
 function MainScreen({handleDelete, array, navigation}) {
+
+  const [distance, setDistance] = useState("We are searching");
+  const [currentLocation, setCurrentLocation] = useState("We don't know yet");
 
   const getLocation = async () => {
     try{
@@ -18,6 +22,16 @@ function MainScreen({handleDelete, array, navigation}) {
       if(!granted) return;
       const result = await LocationApi.getCurrentPositionAsync();
       console.log(result.coords.latitude, result.coords.longitude);
+      const {data: label} = await services.getReverGeoCoding(result.coords.latitude, result.coords.longitude);
+      let {data: distance} = await services.getNearestTractor(result.coords.latitude, result.coords.longitude);
+      distance = parseFloat(distance);
+      distance = Math.round(distance);
+      console.log(label, distance);
+      if(Number.isNaN(distance)) distance = "No tractor service "
+      else if(distance < 1000) distance = "Within 1 km";
+      else distance = Math.round(distance/1000) + "km away";
+      setCurrentLocation(label);
+      setDistance(distance);
     } catch(error) {
       console.log(error);
     }
@@ -32,9 +46,9 @@ function MainScreen({handleDelete, array, navigation}) {
         <View style={styles.container}>
             <View>
             <AppText >Nearest tractor is</AppText>
-            <AppText style={styles.time}>45 min(s) away</AppText>
+            <AppText style={styles.time}>{distance}</AppText>
             </View>
-            <TouchableOpacity style={styles.profile} activeOpacity={0.7} onPress={() => navigation.toggleDrawer}>
+            <TouchableOpacity style={styles.profile} activeOpacity={0.7} onPress={() => navigation.toggleDrawer()}>
             <MaterialCommunityIcons name="account" size={30} color={colors.white} />
             </TouchableOpacity>
         </View>
@@ -50,12 +64,12 @@ function MainScreen({handleDelete, array, navigation}) {
         <Separator style={styles.bar} />
         <ScrollView style={styles.scrollView} vertical showsVerticalScrollIndicator={false} alwaysBounceVertical >
             
-            {array.length == 0 && <View style={styles.subCat}><CurrentLocation /></View>}
+            {array.length == 0 && <View style={styles.subCat}><CurrentLocation headingDetail={currentLocation} /></View>}
 
             {array.map(item => (
             <View style={styles.subCat} key={item.id}>
                 
-                {(array[0].id==item.id) && <CurrentLocation /> }
+                {(array[0].id==item.id) && <CurrentLocation headingDetail={currentLocation} /> }
                 {(array[0].id==item.id) && <Separator /> }
 
                 <Location heading={item.place} headingDetail={item.address} renderRightAction={ () => 

@@ -6,7 +6,7 @@ import AppText from './AppText';
 import { color } from 'react-native-reanimated';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 
-function Location({heading='Your Current Location', headingDetail='I have no idea about it', renderRightAction}) {
+function CurrentLocation({heading='Your Current Location', headingDetail='I have no idea about it', renderRightAction}) {
     return (
         <Swipeable>
             <TouchableOpacity onPress={() => console.log("Touched")} activeOpacity={0.5}>
@@ -49,8 +49,9 @@ const styles = StyleSheet.create({
     },
     smallSize: {
         fontSize: 15,
+        paddingRight: 28,
     },
 })
 
 
-export default Location;
+export default CurrentLocation;

@@ -3,4 +3,5 @@ export default {
     labour: require('../assets/labour.png'),
     harvester: require('../assets/harvester.png'),
     inventory: require('../assets/inventory.png'),
+    profile: require('../assets/profile.png'),
 }
