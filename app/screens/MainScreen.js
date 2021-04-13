@@ -11,10 +11,12 @@ import * as LocationApi from 'expo-location';
 import Location from './../components/Location';
 import services from '../api/services';
 
-function MainScreen({handleDelete, array, navigation}) {
+function MainScreen({navigation}) {
 
+  const [array, setArray] = useState([]);
   const [distance, setDistance] = useState("We are searching");
   const [currentLocation, setCurrentLocation] = useState("We don't know yet");
+  const [selectedLocation, setSelectedLocation] = useState("Choose a location");
 
   const getLocation = async () => {
     try{
@@ -37,9 +39,32 @@ function MainScreen({handleDelete, array, navigation}) {
     }
   }
 
+  const getPlaces = async () => {
+    try{
+      const {data: temp} = await services.getPlaces();
+      setArray(temp);
+    } catch(err){ console.log("Error in getting places", err); }
+  };
+  
+  const handleDelete = async item => {
+    const copyArray = array;
+    setArray(array.filter(currentItem => currentItem.id!=item.id));
+    const { ok } = await services.deletePlace(item);
+    if(ok) {
+      //do nothing it's OK
+    } else {
+      setArray(copyArray);
+    }
+  };
+
   useEffect(() => {
     getLocation();
+    getPlaces();
   }, [])
+
+  const handleLocationTouch = location => {
+    setSelectedLocation(location);
+  };
 
     return (
         <Screen style={styles.box}>
@@ -54,7 +79,7 @@ function MainScreen({handleDelete, array, navigation}) {
         </View>
         <View style={styles.location}>
             <AppText style={styles.time}>Destination address</AppText>
-            <AppText style={styles.address}>Model Town, Jalandhar</AppText>
+            <AppText style={styles.address}>{selectedLocation}</AppText>
             <View style={styles.currentLocation}>
             <AppText style={styles.time}>Change location</AppText>
             <MaterialIcons name="arrow-right-alt" size={40} color="black" style={{paddingLeft: 5}} />
@@ -64,15 +89,15 @@ function MainScreen({handleDelete, array, navigation}) {
         <Separator style={styles.bar} />
         <ScrollView style={styles.scrollView} vertical showsVerticalScrollIndicator={false} alwaysBounceVertical >
             
-            {array.length == 0 && <View style={styles.subCat}><CurrentLocation headingDetail={currentLocation} /></View>}
+            {array.length == 0 && <View style={styles.subCat}><CurrentLocation handleLocationTouch={handleLocationTouch} headingDetail={currentLocation} /></View>}
 
             {array.map(item => (
             <View style={styles.subCat} key={item.id}>
                 
-                {(array[0].id==item.id) && <CurrentLocation headingDetail={currentLocation} /> }
+                {(array[0].id==item.id) && <CurrentLocation headingDetail={currentLocation} handleLocationTouch={handleLocationTouch} /> }
                 {(array[0].id==item.id) && <Separator /> }
 
-                <Location heading={item.place} headingDetail={item.address} renderRightAction={ () => 
+                <Location heading={item.place} headingDetail={item.address} handleLocationTouch={handleLocationTouch} renderRightAction={ () => 
                 
                 <TouchableWithoutFeedback onPress={() => handleDelete(item)} style={styles.rightSwipeable}>
                     <MaterialCommunityIcons name="trash-can" color={colors.danger} size={25} />
@@ -84,6 +109,9 @@ function MainScreen({handleDelete, array, navigation}) {
             ))}
         </ScrollView>
         </View>
+        <TouchableOpacity style={styles.next} activeOpacity={0.5}>
+          <AppText style={styles.book}>Book Service</AppText>
+        </TouchableOpacity>
         </Screen>
     );
 }
@@ -97,6 +125,10 @@ const styles = StyleSheet.create({
     },
     box: {
       backgroundColor: "rgba(139, 223, 109, 0.70)",
+    },
+    book: {
+      color: colors.white,
+      fontWeight: 'bold',
     },
     bar: {
       backgroundColor: colors.dark,
@@ -123,6 +155,17 @@ const styles = StyleSheet.create({
     },
     time: {
       color: colors.black
+    },
+    next: {
+      position: 'absolute',
+      bottom: 50,
+      alignSelf: 'center',
+      width: 200,
+      height: 50,
+      backgroundColor: colors.green,
+      borderRadius: 100,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     profile: {
       width: 45,

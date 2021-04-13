@@ -39,14 +39,13 @@ const dummyData = [
   }
 
 function DrawerNavigation() {
-    [array, setArray] = useState(dummyData);
 
     const MainScreenDrawable = ({navigation}) => (
-      <MainScreen handleDelete={handleDelete} array={array} navigation={navigation} />
+      <MainScreen navigation={navigation} />
     );
   
     const ServiceScreenDrawable = ({navigation}) => (
-      <ServiceScreen location={"Kuch improvement batao bwakoof"} navigation={navigation} />
+      <ServiceScreen navigation={navigation} />
     );
     return (
         <Drawer.Navigator initialRouteName="MainScreen" drawerPosition='right' drawerContent={props => <DrawerContent navigation={props.navigation} />}>

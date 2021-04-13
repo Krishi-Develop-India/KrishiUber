@@ -6,10 +6,10 @@ import AppText from './AppText';
 import { color } from 'react-native-reanimated';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 
-function CurrentLocation({heading='Your Current Location', headingDetail='I have no idea about it', renderRightAction}) {
+function CurrentLocation({heading='Your Current Location', headingDetail='I have no idea about it', renderRightAction, handleLocationTouch}) {
     return (
         <Swipeable>
-            <TouchableOpacity onPress={() => console.log("Touched")} activeOpacity={0.5}>
+            <TouchableOpacity onPress={() => handleLocationTouch(heading)} activeOpacity={0.5}>
                 <View style={ styles.container }>
                     <View style={styles.imageContainer}>
                     <MaterialIcons name="location-pin" size={30} color="white" />

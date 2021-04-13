@@ -1,8 +1,18 @@
 import authClient from './authClient';
 
+const endpointPlaces = '/places';
+const endpointDeletePlace = './deleteplace';
 const endpointServices = '/services';
 const endpointReverseGeoCoding = '/locationLabel';
 const endpointNearestTractor = '/getNearestTractor';
+
+const getPlaces = () => (
+    authClient.get(endpointPlaces)
+);
+
+const deletePlace = item => (
+    authClient.post(endpointDeletePlace, {item})
+);
 
 const getReverGeoCoding = (latitude, longitude) => (
     authClient.post(endpointReverseGeoCoding, {latitude, longitude})
@@ -20,4 +30,6 @@ export default {
     getServices,
     getNearestTractor,
     getReverGeoCoding,
+    getPlaces,
+    deletePlace,
 }
