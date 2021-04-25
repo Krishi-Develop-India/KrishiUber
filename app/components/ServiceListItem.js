@@ -3,15 +3,15 @@ import { View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import colors from '../config/colors';
 import AppText from './AppText';
 
-function ServiceListItem({name, distance, img}) {
+function ServiceListItem({name, price, img, onPress, id}) {
     return (
-        <TouchableOpacity style={styles.container} activeOpacity={0.6}>
+        <TouchableOpacity style={styles.container} activeOpacity={0.6} onPress={() => onPress(id)}>
             <View style={styles.pictureBackground}>
                 <Image source={img} style={styles.image} />
             </View>
             <View style={styles.description}>
                 <AppText style={styles.dark}>{name}</AppText>
-                <AppText>{distance}</AppText>
+                <AppText>{"Rs "+price+" per unit"}</AppText>
             </View>
         </TouchableOpacity>
     );

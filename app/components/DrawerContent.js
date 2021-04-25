@@ -15,7 +15,7 @@ function DrawerContent({navigation}) {
         <View style={styles.container}>
             <DrawerContentScrollView style={styles.scrollView}>
                 <View style={styles.upperDrawer}>
-                    <Profiler name={name} source={source} rating={rating} />
+                    <Profiler name={name} source={source} rating={rating} key={source} />
                 </View>
                 <Separator style={styles.separator} />
                 <DrawerItem

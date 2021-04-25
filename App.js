@@ -6,9 +6,9 @@ import DrawerNavigation from './app/navigation/DrawerNavigation';
 import AuthContext from './app/auth/context';
 import SplashScreen from './app/screens/SplashScreen';
 import authStorage from './app/auth/storage';
-import Profiler from './app/components/Profiler';
-import Screen from './app/components/Screen';
-import Profile from './app/screens/Profile';
+import { Root } from 'native-base';
+import * as Font from 'expo-font';
+import SocketContext from './app/socket/context';
 
 export default function App() {
 
@@ -17,27 +17,38 @@ export default function App() {
     setUser(token);
   }
 
+  const loadFont = async () => {
+    await Font.loadAsync({
+      Roboto: require('native-base/Fonts/Roboto.ttf'),
+      Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
+    });
+  };
+
   const [user, setUser] = useState();
-  const [firstLoad, setFirstLoad] = useState(false);
+  const [socket, setSocket] = useState(null);
+  const [firstLoad, setFirstLoad] = useState(true);
 
   useEffect(() => {
+    loadFont();
     restoreSession();
   }, [user]);
 
   return (
-    <>
+    <Root>
     {
       firstLoad 
       ? 
       <SplashScreen setFirstLoad={setFirstLoad} /> 
       : 
       <AuthContext.Provider value={{user, setUser}}>
-      <NavigationContainer>
-        {user ? <DrawerNavigation /> : <AuthNavigation />}
-      </NavigationContainer>
-    </AuthContext.Provider>
+        <SocketContext.Provider value={{socket, setSocket}}>
+        <NavigationContainer>
+          {user ? <DrawerNavigation /> : <AuthNavigation />}
+        </NavigationContainer>
+        </SocketContext.Provider>
+      </AuthContext.Provider>
     }
-    </>
+    </Root>
   );
 }
 

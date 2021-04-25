@@ -9,6 +9,7 @@ import OtpBoxes from '../components/OtpBoxes';
 import AuthApi from '../api/authentication';
 import AuthContext from './../auth/context';
 import authStorage from '../auth/storage';
+import { Toast } from 'native-base';
 
 function LoginScreen2({route}) {
 
@@ -30,7 +31,18 @@ function LoginScreen2({route}) {
         console.log(otp);
         const result = await AuthApi.verifyOtp(number, otp);
         console.log("results came");
-        if(!result.ok){ console.log(result.problem); return setError(result.problem); }
+        if(!result.ok){
+             setPressed(false);
+             console.log(result.problem); 
+             return Toast.show({
+                text: result.data,
+                textStyle: { fontFamily: 'Roboto' },
+                buttonText: "OK",
+                buttonTextStyle: { color: "#000000", fontFamily: 'Roboto_medium' },
+                buttonStyle: { backgroundColor: colors.green },
+                style: { bottom: 50, marginLeft: 20, marginRight: 20, borderRadius: 10, },
+            }); 
+        }
         //redirect to drawer navigator
         console.log(result.data);
         authContext.setUser(result.data);

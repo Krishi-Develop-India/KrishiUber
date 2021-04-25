@@ -11,6 +11,7 @@ import { TextInput, Button } from 'react-native-paper';
 import AppButton from './../components/AppButton';
 import useAuth from './../auth/useAuth';
 import personalApi from '../api/personal';
+import { Toast } from 'native-base';
 
 function Profile(props) {
 
@@ -22,6 +23,7 @@ function Profile(props) {
     const [changes, onChanges] = useState(false);
     let [previousName, setPreviousName] = useState(name);
     let [previousImage, setPreviousImage] = useState(profileImage);
+    const [disabled, setDisabled] = useState(false);
 
 
     const updateData = async (token, setUser) => {
@@ -32,19 +34,59 @@ function Profile(props) {
         console.log(`Previous Uri: ${previousImage}`);
         console.log(`Current Uri: ${profileImage}`);
         if(previousName !== name){ 
-            const { data: newToken } = await personalApi.updateProfileName(name);
+            const { data: newToken, status, ok } = await personalApi.updateProfileName(name);
+            if(!ok) {
+                Toast.show({
+                    text: newToken,
+                    textStyle: { fontFamily: 'Roboto' },
+                    buttonText: "OK",
+                    buttonTextStyle: { color: colors.white, fontFamily: 'Roboto_medium' },
+                    buttonStyle: { backgroundColor: colors.green },
+                    style: { bottom: 50, marginLeft: 20, marginRight: 20, borderRadius: 10, },
+                });
+                return setPreviousName(previousName);
+            }
             await personalApi.updateUser(newToken, setUser);
             setPreviousName(name);
+            Toast.show({
+                text: 'Name updated',
+                textStyle: { fontFamily: 'Roboto' },
+                buttonText: "OK",
+                buttonTextStyle: { color: colors.white, fontFamily: 'Roboto_medium' },
+                buttonStyle: { backgroundColor: colors.green },
+                style: { bottom: 50, marginLeft: 20, marginRight: 20, borderRadius: 10, },
+            });
         }
         if(previousImage !== profileImage){
-            const { data: newToken } = await personalApi.updateProfilePicture(profileImage, token);
+            const { data: newToken, ok } = await personalApi.updateProfilePicture(profileImage, token);
+            if(!ok) {
+                Toast.show({
+                    text: newToken,
+                    textStyle: { fontFamily: 'Roboto' },
+                    buttonText: "OK",
+                    buttonTextStyle: { color: colors.white, fontFamily: 'Roboto_medium' },
+                    buttonStyle: { backgroundColor: colors.green },
+                    style: { bottom: 50, marginLeft: 20, marginRight: 20, borderRadius: 10, },
+                });
+                return setPreviousImage(previousImage);
+            }
             await personalApi.updateUser(newToken, setUser);
             setPreviousImage(profileImage);
+            Toast.show({
+                text: 'Profile image updated',
+                textStyle: { fontFamily: 'Roboto' },
+                buttonText: "OK",
+                buttonTextStyle: { color: colors.white, fontFamily: 'Roboto_medium' },
+                buttonStyle: { backgroundColor: colors.green },
+                style: { bottom: 50, marginLeft: 20, marginRight: 20, borderRadius: 10, },
+            });
         }
+        onChanges(false);
+        setDisabled(true);
     }
 
     const nameChange = text => {
-        if(text !== previousName) onChanges(true);
+        if(text !== previousName){ onChanges(true); setDisabled(false); }
         else onChanges(false);
         setName(text);
     }
@@ -52,7 +94,7 @@ function Profile(props) {
     const selectImage = async () => {
         try{
             const {cancelled, uri} = await ImageSelector.launchImageLibraryAsync();
-            if(!cancelled){ onChanges(true); setProfileImage(uri); }
+            if(!cancelled){ onChanges(true); setProfileImage(uri); setDisabled(false); }
 
         } catch(error) {
             console.log("An error selecting the image.", error);

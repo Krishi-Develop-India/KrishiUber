@@ -1,8 +1,9 @@
 import { create } from 'apisauce';
 import AuthStorage from '../auth/storage';
+import Network from '../config/network';
 
 const apiClient = create({
-    baseURL: 'http://192.168.43.102/auth/api',
+    baseURL: Network.server_host+'/auth/api',
 });
 
 apiClient.addAsyncRequestTransform(async request => {

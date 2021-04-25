@@ -6,17 +6,49 @@ import colors from '../config/colors';
 import InputText from '../components/InputText';
 import AppButton from '../components/AppButton';
 import AuthApi from '../api/authentication';
+import { Toast } from 'native-base';
+import { stringify } from 'uuid';
 
 function LoginScreen1({navigation}) {
 
-    const [number, setNumber] = useState();
+    const [number, setNumber] = useState('');
     const [error, setError] = useState(null);
     const [pressed, setPressed] = useState(false);
 
     const handlePress = async navigation => {
-        setPressed(true);
+        // setPressed(true);
+        if(number == '') {
+            return Toast.show({
+                text: 'Enter your number',
+                textStyle: { fontFamily: 'Roboto' },
+                buttonText: "OK",
+                buttonTextStyle: { color: colors.white, fontFamily: 'Roboto' },
+                buttonStyle: { backgroundColor: colors.green },
+                style: { bottom: 50, marginLeft: 20, marginRight: 20, borderRadius: 10, },
+            });
+        }
+        if(number.length != 10) {
+            return Toast.show({
+                text: 'Number not valid',
+                textStyle: { fontFamily: 'Roboto' },
+                buttonText: "OK",
+                buttonTextStyle: { color: "#008000", fontFamily: 'Roboto' },
+                buttonStyle: { backgroundColor: "#5cb85c" },
+                style: { bottom: 50, marginLeft: 20, marginRight: 20, borderRadius: 10, },
+            });
+        }
         const result = await AuthApi.requestOtp(number);
-        if(!result.ok){ setPressed(false); return setError(result.problem); }
+        if(!result.ok){ 
+            Toast.show({
+                text: result.status == 401 ? result.data : result.problem,
+                textStyle: { fontFamily: 'Roboto' },
+                buttonText: "OK",
+                buttonTextStyle: { color: "#008000", fontFamily: 'Roboto' },
+                buttonStyle: { backgroundColor: "#5cb85c" },
+                style: { bottom: 50, marginLeft: 20, marginRight: 20, borderRadius: 10, },
+            });
+            return setPressed(false);
+        }
         navigation.navigate("LoginScreen2", {number});
     }
 
@@ -29,12 +61,13 @@ function LoginScreen1({navigation}) {
             placeholder="Number" 
             icon="phone" 
             keyboardType="number-pad" 
-            onChangeText={ text => setNumber(text) }/>
+            onChangeText={ text => setNumber(text) }
+            maxLength={10} />
             <AppButton 
             style={styles.button} 
             text="Next"
             onPress={() => handlePress(navigation)} 
-            pressed={pressed}/>
+            pressed={pressed} />
         </Screen>
     );
 }

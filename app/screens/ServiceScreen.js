@@ -9,11 +9,23 @@ import ServiceListItem from '../components/ServiceListItem';
 import ServicesApi from '../api/services';
 import servicePictures from '../config/servicePictures';
 
-function ServiceScreen({location="Mera ghar"}) {
+function ServiceScreen({route, navigation}) {
+
+    const { location, longitude, latitude } = route.params;
 
     const [services, setServices] = useState();
 
     useEffect(() => {getServices()}, []);
+
+    const handleServiceSelect = id => {
+        let price = NaN;
+        services.forEach(element => {
+            if(element.id == id) {
+                price = element.price;
+            }
+        });
+        return navigation.navigate('DetailServiceScreen',  {location: location, longitude: longitude, latitude: latitude, price: price});
+    };
 
     async function getServices(){
         const response = await ServicesApi.getServices();
@@ -33,7 +45,12 @@ function ServiceScreen({location="Mera ghar"}) {
             <ScrollView showsVerticalScrollIndicator={false}>
                 {services.map(service => (
                     <View style={styles.subcat} key={service.id}>
-                    <ServiceListItem name={service.name} img={servicePictures[service.img]} distance={service.distance} />
+                    <ServiceListItem 
+                    name={service.name} 
+                    img={servicePictures[service.img]} 
+                    price={service.price}
+                    onPress={handleServiceSelect} 
+                    id={service.id} />
                     { service.id!=services[services.length-1].id && <Separator /> }
                     </View>
                 ))}

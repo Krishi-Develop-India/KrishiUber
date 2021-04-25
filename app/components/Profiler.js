@@ -1,16 +1,20 @@
-import React from 'react';
+import React, { useS } from 'react';
 import {View, StyleSheet, Image} from 'react-native';
 import AppText from './AppText';
 import Pictures from '../config/servicePictures';
 import colors from '../config/colors';
 import { AntDesign } from '@expo/vector-icons';
 
+let count = 0;
 
 function Profiler({source, name="Pikachu", rating="5.0"}) {
+    
     if(!source) {
         source = Pictures.profile;
     } else {
-        source = {uri: source}
+        source = {uri: source, headers: {
+            Pragma: 'no-cache',
+          }, cache: 'reload'};
     }
     return (
         <View style={styles.container}>

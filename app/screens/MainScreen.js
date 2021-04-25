@@ -8,6 +8,7 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import CurrentLocation from '../components/CurrentLocation';
 import Separator from './../components/Separator';
 import * as LocationApi from 'expo-location';
+import { Toast } from 'native-base'
 import Location from './../components/Location';
 import services from '../api/services';
 
@@ -17,7 +18,7 @@ function MainScreen({navigation}) {
   const [distance, setDistance] = useState("We are searching");
   const [currentLocation, setCurrentLocation] = useState("We don't know yet");
   const [selectedLocation, setSelectedLocation] = useState("Choose a location");
-
+  
   const getLocation = async () => {
     try{
       const { granted } = await LocationApi.requestPermissionsAsync();
@@ -42,6 +43,7 @@ function MainScreen({navigation}) {
   const getPlaces = async () => {
     try{
       const {data: temp} = await services.getPlaces();
+      console.log(temp);
       setArray(temp);
     } catch(err){ console.log("Error in getting places", err); }
   };
@@ -57,12 +59,41 @@ function MainScreen({navigation}) {
     }
   };
 
+  const handleBookService = async () => {
+    if(selectedLocation === 'Choose a location') {
+      Toast.show({
+        text: "Choose your location",
+        textStyle: { fontFamily: 'Roboto_medium' },
+        buttonText: "Select",
+        buttonTextStyle: { color: colors.white, fontFamily: 'Roboto' },
+        buttonStyle: { backgroundColor: colors.green },
+        style: { bottom: 50, marginLeft: 20, marginRight: 20, borderRadius: 10, },
+      });
+      return;
+    }
+    let latitude=NaN, longitude=NaN;
+    if(selectedLocation == 'Your Current Location') {
+      const result = await LocationApi.getCurrentPositionAsync();
+      latitude = result.coords.latitude;
+      longitude = result.coords.longitude;
+    } else { 
+      array.forEach(element => {
+        if(element.heading == selectedLocation) {
+          latitude = element.latitude;
+          longitude = element.longitude;
+        }
+      });
+    };
+    navigation.navigate('ServiceScreen', {location: selectedLocation, latitude: latitude, longitude: longitude});
+  };
+
   useEffect(() => {
     getLocation();
     getPlaces();
   }, [])
 
   const handleLocationTouch = location => {
+    console.log(location);
     setSelectedLocation(location);
   };
 
@@ -109,7 +140,7 @@ function MainScreen({navigation}) {
             ))}
         </ScrollView>
         </View>
-        <TouchableOpacity style={styles.next} activeOpacity={0.5}>
+        <TouchableOpacity style={styles.next} activeOpacity={0.5} onPress={() => handleBookService()} >
           <AppText style={styles.book}>Book Service</AppText>
         </TouchableOpacity>
         </Screen>

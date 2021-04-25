@@ -5,6 +5,7 @@ import ServiceScreen from './../screens/ServiceScreen';
 import MainScreen from './../screens/MainScreen';
 import DrawerContent from './../components/DrawerContent';
 import Profile from './../screens/Profile';
+import HomeNavigator from './HomeNavigator';
 
 const Drawer = createDrawerNavigator();
 
@@ -49,8 +50,7 @@ function DrawerNavigation() {
     );
     return (
         <Drawer.Navigator initialRouteName="MainScreen" drawerPosition='right' drawerContent={props => <DrawerContent navigation={props.navigation} />}>
-            <Drawer.Screen name="MainScreen" component={MainScreenDrawable} />
-            <Drawer.Screen name="ServiceScreen" component={ServiceScreenDrawable} />
+            <Drawer.Screen name="HomeNavigator" component={HomeNavigator} />
             <Drawer.Screen name="Profile" component={Profile} />
         </Drawer.Navigator>
     );
