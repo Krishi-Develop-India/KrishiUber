@@ -41,9 +41,9 @@ function LoginScreen1({navigation}) {
         if(!result.ok){ 
             Toast.show({
                 text: result.status == 401 ? result.data : result.problem,
-                textStyle: { fontFamily: 'Roboto' },
+                textStyle: { fontFamily: 'Roboto_medium' },
                 buttonText: "OK",
-                buttonTextStyle: { color: "#008000", fontFamily: 'Roboto' },
+                buttonTextStyle: { color: "#008000", fontFamily: 'Roboto_medium' },
                 buttonStyle: { backgroundColor: "#5cb85c" },
                 style: { bottom: 50, marginLeft: 20, marginRight: 20, borderRadius: 10, },
             });

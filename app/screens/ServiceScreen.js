@@ -33,7 +33,11 @@ function ServiceScreen({route, navigation}) {
     }
 
     if(!services) {
-        return <AppText>No Services available!</AppText>
+        return(
+            <Screen style={{justifyContent: 'center', alignItems: 'center'}}>
+                <AppText>No services found!</AppText>
+            </Screen>
+        );
     }
     return (
         <Screen style={styles.container}>

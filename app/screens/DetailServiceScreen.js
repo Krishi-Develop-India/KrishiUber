@@ -6,6 +6,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AppText from './../components/AppText';
 import AppButton from './../components/AppButton';
 import services from '../api/services';
+import { Toast } from 'native-base';
 import InputText from './../components/InputText';
 
 function DetailServiceScreen({route, navigation}) {
@@ -23,8 +24,18 @@ function DetailServiceScreen({route, navigation}) {
     };
 
     const handleBookMyTractor = async () => {
-        const { data: response } = await services.bookTractor(latitude, longitude, bigha, amount);
-        navigation.navigate('FindingLoadingScreen');
+        const { data, status, ok } = await services.bookTractor(latitude, longitude, bigha, amount);
+        if(!ok) return (
+            Toast.show({
+                text: status == 404 ? 'No tractor found' : 'Please try again later',
+                textStyle: { fontFamily: 'Roboto_medium' },
+                buttonText: "OK",
+                buttonTextStyle: { color: "#008000", fontFamily: 'Roboto_medium' },
+                buttonStyle: { backgroundColor: "#5cb85c" },
+                style: { bottom: 50, marginLeft: 20, marginRight: 20, borderRadius: 10, },
+            })
+        );
+        navigation.navigate('FindingLoadingScreen', {_id: data._id});
     };
 
     return (

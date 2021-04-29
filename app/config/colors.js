@@ -6,4 +6,5 @@ export default {
     light: '#C4C4C4',
     danger: '#ff5252',
     lighter: '#f8f4f4',
+    accept: '#5cb85c',
 }
