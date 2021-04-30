@@ -1,4 +1,4 @@
 module.exports = {
-    socket_host: 'http://192.168.43.103:80',
-    server_host: 'http://192.168.43.103:80',
+    socket_host: 'https://krishi-india.herokuapp.com/',
+    server_host: 'https://krishi-india.herokuapp.com/',
 };
